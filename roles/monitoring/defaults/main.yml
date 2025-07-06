@@ -1,0 +1,8 @@
+influxdb_username: admin
+influxdb_password: "{{ influxdb_password }}"
+influxdb_org: my-org
+influxdb_bucket: my-bucket
+influxdb_admin_token: "{{ influxdb_token }}"
+
+grafana_admin_user: admin
+grafana_admin_password: "{{ grafana_admin_password }}"

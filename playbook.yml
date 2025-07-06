@@ -1,0 +1,6 @@
+- name: Deploy monitoring stack
+  hosts: all
+  become: yes
+  roles:
+    - geerlingguy.docker
+    - monitoring
