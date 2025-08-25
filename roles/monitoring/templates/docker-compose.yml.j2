@@ -6,6 +6,7 @@ services:
     container_name: influxdb
     ports:
       - "8086:8086"
+    restart: always
     volumes:
       - influxdb_data:/var/lib/influxdb2
     environment:
@@ -21,6 +22,7 @@ services:
     container_name: grafana
     ports:
       - "3000:3000"
+    restart: always
     environment:
       GF_SECURITY_ADMIN_USER: "{{ grafana_admin_user }}"
       GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"
@@ -35,6 +37,7 @@ services:
     container_name: prometheus
     ports:
       - "9090:9090"
+    restart: always
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -42,7 +45,21 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.retention.time=7d"
 
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "{{ postgres_user }}"
+      POSTGRES_PASSWORD: "{{ postgres_password }}"
+      POSTGRES_DB: "{{ postgres_db }}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 volumes:
   influxdb_data:
   grafana_data:
   prometheus_data:
+  postgres_data:

@@ -1,22 +1,22 @@
 - name: Create monitoring stack directory
   file:
-    path: "{{ monitoring_stack_dir }}/prometheus"
+    path: "{{ ansible_base_dir }}/prometheus"
     state: directory
     recurse: yes
 
 - name: Render docker-compose.yml from template
   template:
     src: docker-compose.yml.j2
-    dest: "{{ monitoring_stack_dir }}/docker-compose.yml"
+    dest: "{{ ansible_base_dir }}/docker-compose.yml"
     mode: '0644'
 
 - name: Copy prometheus.yml
   copy:
     src: prometheus.yml
-    dest: "{{ monitoring_stack_dir }}/prometheus/prometheus.yml"
+    dest: "{{ ansible_base_dir }}/prometheus/prometheus.yml"
     mode: '0644'
 
 - name: Start monitoring stack with Docker Compose
   shell: docker compose up -d
   args:
-    chdir: "{{ monitoring_stack_dir }}"
+    chdir: "{{ ansible_base_dir }}"

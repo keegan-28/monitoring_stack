@@ -6,3 +6,7 @@ influxdb_admin_token: "{{ influxdb_token }}"
 
 grafana_admin_user: admin
 grafana_admin_password: "{{ grafana_admin_password }}"
+
+postgres_user: admin
+postgres_password: "{{ postgres_password }}"
+postgres_db: postgres_database

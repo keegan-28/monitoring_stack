@@ -2,3 +2,4 @@ influxdb_password: influx_password
 influxdb_token: my-super-secret-token
 
 grafana_admin_password: grafana_password
+postgres_password: postgres_password
