@@ -1,22 +1,6 @@
 version: "3.8"
 
 services:
-  influxdb:
-    image: influxdb:2.7
-    container_name: influxdb
-    ports:
-      - "8086:8086"
-    restart: always
-    volumes:
-      - influxdb_data:/var/lib/influxdb2
-    environment:
-      DOCKER_INFLUXDB_INIT_MODE: setup
-      DOCKER_INFLUXDB_INIT_USERNAME: "{{ influxdb_username }}"
-      DOCKER_INFLUXDB_INIT_PASSWORD: "{{ influxdb_password }}"
-      DOCKER_INFLUXDB_INIT_ORG: "{{ influxdb_org }}"
-      DOCKER_INFLUXDB_INIT_BUCKET: "{{ influxdb_bucket }}"
-      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: "{{ influxdb_admin_token }}"
-
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -29,7 +13,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     depends_on:
-      - influxdb
+      - postgres
       - prometheus
 
   prometheus:
@@ -58,8 +42,46 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  postgres_exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: postgres_exporter
+    restart: always
+    environment:
+      DATA_SOURCE_NAME: "postgresql://{{ postgres_user }}:{{ postgres_password }}@postgres:5432/{{ postgres_db }}?sslmode=disable"
+    ports:
+      - "9187:9187"
+    depends_on:
+      - postgres
+  
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: cadvisor
+    restart: always
+    privileged: true
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+
 volumes:
-  influxdb_data:
   grafana_data:
   prometheus_data:
   postgres_data:

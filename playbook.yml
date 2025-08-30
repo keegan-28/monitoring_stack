@@ -1,4 +1,4 @@
-- name: Deploy monitoring stack
+- name: Deploy WATCHTOWER
   hosts: all
   become: yes
   roles:
