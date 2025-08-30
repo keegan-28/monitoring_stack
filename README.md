@@ -1,6 +1,6 @@
 # WATCHTOWER - Raspberry Pi Monitoring Stack Deployment (Ansible)
 
-> Includes: Docker, Grafana, InfluxDB, and Prometheus — all deployed via Docker Compose.
+> Includes: Docker, Grafana, PostgreSQL, and Prometheus — all deployed via Docker Compose.
 
 ---
 
